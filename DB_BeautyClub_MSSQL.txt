@@ -1,0 +1,347 @@
+Use BeautyClub
+
+--CREATE TABLE
+
+CREATE TABLE Clients
+(
+    Id INT,
+    FirstName NVARCHAR(20) NOT NULL,
+    LastName NVARCHAR(20) NOT NULL,
+	[Address] VARCHAR(30) NOT NULL,
+	Email VARCHAR(30),
+	Phone VARCHAR(20),
+	CONSTRAINT PK_Clients_Id PRIMARY KEY(Id)
+)
+
+CREATE TABLE Groups
+(
+    Id INT,
+	NameGroup VARCHAR(30),
+	CONSTRAINT PK_Groups_Id PRIMARY KEY (Id)
+)
+
+CREATE TABLE Positions
+(
+    Id INT,
+	NamePositions VARCHAR(30),
+	Group_Id INT,
+	CONSTRAINT PK_Positions_Id PRIMARY KEY(Id),
+	CONSTRAINT FK_Positions_To_Groups FOREIGN KEY (Group_Id) REFERENCES Groups (Id) ON DELETE SET NULL
+)
+
+CREATE TABLE Employees
+(
+    Id INT,
+	Positions_Id INT,
+    FirstName NVARCHAR(20) NOT NULL,
+    LastName NVARCHAR(20) NOT NULL,
+	[Address] VARCHAR(30),
+    Phone VARCHAR(20),
+	CONSTRAINT PK_Employees_Id PRIMARY KEY(Id),
+	CONSTRAINT FK_Employees_To_Positions FOREIGN KEY (Positions_Id) REFERENCES Positions (Id) ON DELETE SET NULL
+)
+
+CREATE TABLE [Services]
+(
+    Id INT,
+	Group_Id INT,
+	NameService VARCHAR(30),
+	Price MONEY,
+	[Description] VARCHAR(30),
+	CONSTRAINT PK_Services_Id PRIMARY KEY(Id),
+	CONSTRAINT FK_Services_To_Group FOREIGN KEY (Group_Id) REFERENCES Groups (Id) ON DELETE SET NULL
+)
+CREATE TABLE Visit
+(
+    Id INT,
+	Client_Id INT,
+	Employee_Id INT,
+	Service_Id INT,
+	[DateTime] DATE,
+	CONSTRAINT PK_Visit_Id PRIMARY KEY(Id),
+	CONSTRAINT FK_Visit_To_Clients FOREIGN KEY (Client_Id) REFERENCES Clients (Id) ON DELETE SET NULL,
+	CONSTRAINT FK_Visit_To_Employees FOREIGN KEY (Employee_Id) REFERENCES Employees (Id) ON DELETE SET NULL,
+	CONSTRAINT FK_Visit_To_Services FOREIGN KEY (Service_Id) REFERENCES [Services] (Id) ON DELETE SET NULL
+)
+
+--ALTER TAL
+--Збільшимо розмір рядка до 100
+ALTER TABLE [Services]
+ALTER COLUMN [Description] VARCHAR(100);
+
+--DROP TABLE
+
+--DROP TABLE Clients
+
+
+INSERT INTO Groups 
+VALUES
+(1, 'Космотологічні послуги'),
+(2, 'Перукарні послуги'),
+(3, 'Ногтеві послуги'),
+(4, 'Лазерна корекція лиця'),
+(5, 'Візаж, рісниці, брови'),
+(6, 'Масаж')
+
+SELECT * FROM Groups
+
+
+INSERT INTO Clients 
+VALUES
+(1, 'Антон', 'Гуцало', 'м-н Перемоги 9Б', 'antongutsalo@gmail.com', '+380961067363'),
+(2, 'Тарас', 'Ткач', 'м-н Перемоги 16', 'tkachiktaras@gmail.com', '+380971367185'),
+(3, 'Альоша', 'Костючок', 'м-н Поліська 2', 'kostuchokalesha@gmail.com', '+380963268501'),
+(4, 'Андрій', 'Гришко', 'м-н Подільська 39', 'jecagrishko@gmail.com', '+380793268725'),
+(5, 'Назар', 'Стельмах', 'м-н Волинська 22', 'stelmahnazar@gmail.com', '+380764538086'),
+(6, 'Микита', 'Герасимчук', 'м-н Будівельники 4', 'mukutagerasumchuk@gmail.com', '+380652305736'),
+(7, 'Маргарита', 'Басюк', 'м-н Вараш 23', 'margaritabasuk@gmail.com', '+380955623853'),
+(8, 'Соня', 'Малишевська', 'м-н Степана Бандери 12', 'dianamalushevska@gmail.com', '+380056723758'),
+(9, 'Соня', 'Базелючка', 'м-н Перемоги 42', 'sonyabazeluchka@gmail.com', '+380465867334')
+
+SELECT * FROM Clients
+
+
+INSERT INTO Positions 
+VALUES
+(1, 'Мастер манікюра', 3),
+(2, 'Перукар', 2),
+(3, 'Візажист', 5),
+(4, 'Косметолог', 1),
+(5, 'Хірург', 4),
+(6, 'Масажист', 6),
+(7, 'Мастер педикюр', 3)
+
+SELECT * FROM Positions
+
+INSERT INTO [Services]
+VALUES
+(1, 1, 'Уход за лицем', 200, 'Уход за лицем та його покращення'),
+(2, 2, 'Чоловічі стрижки', 100, 'Кроп, Фейд, Квіфф '),
+(3, 3, 'Манікюр', 250, 'Крисивий та акуратний манікюр'),
+(4, 4, 'Корекція морщин', 400, 'Загладження та знищення всіх морщин'),
+(5, 5, 'Ранковий макіяж', 50, 'Макіяж для кращого настрію на весь день'),
+(6, 6, 'Масаж спини', 80,'Розслабляючий масаж для спини'),
+(7, 2, 'Жіночі стрижки', 120, 'Каре, Какад, Пікс'),
+(8, 2, 'Дитячі стрижки', 60, 'Бокс, Кроп, Андеркат'),
+(9, 3, 'Педикюр ', 220, 'Професійний та красивий педікюр від мастерів'),
+(10, 4, 'Плазмоліфтінг', 330, 'Знищення пор лиця'),
+(11, 5, 'Вечірній макіяж', 60,'Макіяж для нічних вечірок'),
+(12, 6, 'Масаж ніг', 40, 'Розслабляючий масаж для ніг')
+
+SELECT * FROM [Services]
+
+INSERT INTO Employees 
+VALUES
+(1, 1, 'Андрій', 'Пашко', 'м-н Бандери 17', '+380984277223'),
+(2, 2, 'Василь', 'Ткачук', 'м-н Петлюри 32', '+380966319114'),
+(3, 3, 'Анна', 'Анновна', 'м-н Леніна 19', '+380623433567'),
+(4, 4, 'Інна', 'Татаренко', 'м-н Карповича 3', '+380984544769'),
+(5, 5, 'Галина', 'Максимчук', 'м-н Стропальщика 11', '+380886734235'),
+(6, 6, 'Оксана', 'Федорчук', 'м-н Ілїна 20', '+380845764997'),
+(7, 7, 'Надія', 'Миколайчук', 'м-н Повара 19', '+380765564321'),
+(8, 1, 'Татьяна', 'Кирилюк', 'м-н Калашніка 45', '+380543334986')
+
+SELECT * FROM Employees
+
+
+
+INSERT INTO Visit 
+VALUES
+(1, 1, 6, 5, '2021-05-21T14:25:00'),
+(2, 2, 1, 1, '2021-05-20T12:30:00'),
+(3, 3, 1, 1, '2021-05-25T08:10:00'),
+(4, 4, 3, 3, '2021-05-27T09:45:00'),
+(5, 6, 4, 2, '2021-05-09T11:05:00'),
+(6, 3, 8, 6, '2021-05-02T16:00:00'),
+(7, 8, 2, 7, '2021-05-07T18:50:00'),
+(8, 6, 8, 8, '2021-05-10T20:00:00')
+
+SELECT * FROM Visit
+UPDATE Visit
+SET Service_Id = 10
+--UPDATE  
+
+UPDATE [Services]
+SET Price = Price + 10
+
+--DELETE
+
+DELETE Patient
+WHERE Id=8
+
+--DELETE Employees
+--DELETE Clients
+--DELETE [Services]
+--DELETE Positions
+--DELETE Visit
+--DELETE Groups
+
+--DROP TABLE Visit
+--DROP TABLE [Services]
+--DROP TABLE Employees
+--DROP TABLE Positions
+--DROP TABLE Groups
+--DROP TABLE Clients
+
+--SELECT (DISTINCT, TOP, AS)
+
+SELECT
+FirstName + ' ' + LastName AS FullName, 
+[Address] + ' (' + Phone + ')' AS [Data]
+FROM Clients
+
+SELECT DISTINCT NameService
+FROM [Services]
+
+--Мають одинаковий результат
+SELECT TOP 5 FirstName
+FROM Clients
+
+SELECT TOP 55 PERCENT FirstName
+FROM Clients
+
+--SELECT (ORDER BY, OFFSET, FETCH)
+
+SELECT * FROM Clients
+ORDER BY FirstName
+
+
+SELECT * FROM [Services]
+ORDER BY Price DESC
+
+SELECT * FROM [Services]
+ORDER BY Price 
+    OFFSET 5 ROWS;
+
+SELECT * FROM [Services]
+ORDER BY Price 
+    OFFSET 2 ROWS
+    FETCH NEXT 5 ROWS ONLY;
+	
+--SELECT (LIKE, BETWEEN)
+
+SELECT * FROM [Services]
+WHERE Price BETWEEN '100' AND '200'
+
+SELECT * FROM Employees
+WHERE LastName LIKE 'М%'
+
+SELECT * FROM Employees
+WHERE LastName LIKE '%чук'
+
+SELECT * FROM Clients
+
+--SELECT (AVG, MIN, MAX, SUM, COUNT)
+
+SELECT COUNT(*) AS ProdCount,
+       SUM(Price) AS TotalCount,
+       MIN(Price) AS MinPrice,
+       MAX(Price) AS MaxPrice,
+       AVG(Price) AS AvgPrice
+FROM [Services]
+
+--SELECT (GROUP BY, HAVING)
+
+--Згрупуємо клієнтів по іменам 
+SELECT FirstName, COUNT(*) AS [Count]
+FROM Clients
+GROUP BY FirstName
+
+--Дізнаємося яких імен більше 1 в таблиці клієнтів
+SELECT FirstName, COUNT(*) AS [Count]
+FROM Clients
+GROUP BY FirstName
+HAVING COUNT(*) > 1
+
+--SELECT (IN, ANY, ALL, EXIST)
+
+SELECT * FROM [Services]
+WHERE Price > ALL (SELECT Price FROM [Services] WHERE Price < 100)
+
+SELECT * FROM [Services]
+WHERE Price > ANY (SELECT Price FROM [Services] WHERE Price > 100)
+
+--Пацієнти, яким призначили діагноз
+SELECT * FROM Clients
+WHERE Id IN (SELECT Client_Id FROM Visit)
+
+--Пацієнти, яким не призначили діагноз
+SELECT * FROM Clients
+WHERE NOT EXISTS (SELECT * FROM Visit WHERE Clients.Id = Visit.Client_Id)
+
+--JOIN (INNER, RIGHT, LEFT, FULL, CROSS)
+
+SELECT Clients.FirstName, Clients.LastName, Visit.[DateTime]
+FROM Clients INNER JOIN Visit 
+ON Clients.Id = Visit.Client_Id
+
+--Дізнаємося які спеціалізації мають робітники через RIGHT JOIN
+SELECT Employees.FirstName, Employees.LastName, Positions.NamePositions
+FROM Employees 
+RIGHT JOIN Positions 
+ON Employees.Positions_Id = Positions.Id
+
+--Дізнаємося які спеціалізації мають робітники через LEFT JOIN
+SELECT Employees.FirstName, Employees.LastName, Positions.NamePositions
+FROM  Positions
+LEFT JOIN Employees 
+ON Employees.Positions_Id = Positions.Id
+
+--Дізнаємося які спеціалізації мають робітники через FULL JOIN
+SELECT Employees.FirstName, Employees.LastName, Positions.NamePositions
+FROM  Positions 
+FULL JOIN  Employees
+ON Employees.Positions_Id = Positions.Id
+
+SELECT * FROM Employees CROSS JOIN Positions
+
+--UNION, EXCEPT, INTERSECT
+
+SELECT FirstName, LastName 
+FROM Clients
+UNION SELECT FirstName, LastName FROM Employees
+
+SELECT FirstName
+FROM Clients
+EXCEPT SELECT FirstName
+FROM Employees
+
+SELECT FirstName
+FROM Clients
+INTERSECT SELECT FirstName
+FROM Employees
+
+
+CREATE PROCEDURE GetPriceStatus
+    @minPrice MONEY OUTPUT,
+    @maxPrice MONEY OUTPUT
+AS
+SELECT @minPrice = MIN(Price),  @maxPrice = MAX(Price)
+FROM Dishes
+GO
+
+
+
+Create FUNCTION [dbo].[GetServicesByPrice]
+(
+    @min_price INT,
+  @max_price INT
+)
+RETURNS @returntable TABLE
+(
+ Id INT,
+	Group_Id INT,
+	NameService VARCHAR(30),
+	Price MONEY,
+	[Description] VARCHAR(100)
+)
+AS
+BEGIN
+    INSERT @returntable
+    SELECT Id, Group_Id, NameService, Price,[Description] FROM Services WHERE Price < @max_price AND Price > @min_price
+    RETURN
+END
+GO
+
+SELECT*
+FROM [GetServicesByPrice](50, 200)
